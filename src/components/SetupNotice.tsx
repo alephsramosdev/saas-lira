@@ -88,15 +88,18 @@ export default function SetupNotice() {
     <Page>
       <PageHeader>
         <div>
-          <PageTitle>Quase lá — falta atualizar o banco</PageTitle>
+          <PageTitle>Quase lá — falta concluir a configuração</PageTitle>
           <PageSubtitle>
-            O Supabase está conectado, mas o schema ainda não foi aplicado (ou está
-            desatualizado). O SQL abaixo é seguro de rodar mais de uma vez.
+            Configure as variáveis do Supabase e aplique o schema do banco. O SQL
+            abaixo é seguro de rodar mais de uma vez.
           </PageSubtitle>
         </div>
       </PageHeader>
       <Card>
         <Steps>
+          <li>
+            Verifique se o deploy tem <code>NEXT_PUBLIC_SUPABASE_URL</code> e <code>SUPABASE_SERVICE_ROLE_KEY</code> configuradas.
+          </li>
           <li>
             Abra o{" "}
             <a

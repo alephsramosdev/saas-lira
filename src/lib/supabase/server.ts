@@ -2,6 +2,13 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 let client: SupabaseClient | null = null;
 
+export function hasSupabaseServerEnv(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      (process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.SUPABASE_SECRET_KEY)
+  );
+}
+
 /**
  * Cliente Supabase de servidor (chave secreta — ignora RLS).
  * Nunca importar em componentes client.

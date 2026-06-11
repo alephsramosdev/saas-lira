@@ -1,4 +1,8 @@
-import { getSupabase, isMissingTableError } from "./supabase/server";
+import {
+  getSupabase,
+  hasSupabaseServerEnv,
+  isMissingTableError,
+} from "./supabase/server";
 import { BalanceSummary, Goal, Source, Transaction } from "./types";
 
 export interface AppData {
@@ -22,6 +26,10 @@ const EMPTY: AppData = {
 
 /** Busca tudo (app pessoal, volume pequeno). setupNeeded=true se o schema SQL ainda não foi aplicado/atualizado. */
 export async function getAppData(): Promise<AppData> {
+  if (!hasSupabaseServerEnv()) {
+    return EMPTY;
+  }
+
   const supabase = getSupabase();
 
   const [tx, gl, src, probe] = await Promise.all([
