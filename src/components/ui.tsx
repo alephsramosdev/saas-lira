@@ -208,12 +208,16 @@ export const Input = styled.input`
   border: 1.5px solid transparent;
   border-radius: var(--r-md);
   padding: 10px 13px;
-  font-size: 14.5px;
+  font-size: 15px;
   background: var(--surface-2);
   color: var(--text);
   outline: none;
   width: 100%;
   transition: border-color 0.15s ease, background 0.15s ease;
+
+  @media (hover: none) and (pointer: coarse) {
+    font-size: 16px;
+  }
 
   &:hover {
     background: var(--surface-3);
@@ -287,9 +291,9 @@ export function MoneyInput({
     value === null
       ? ""
       : value.toLocaleString("pt-BR", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        });
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      });
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const digits = e.target.value.replace(/\D/g, "").slice(0, 12);

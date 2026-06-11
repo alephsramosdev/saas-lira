@@ -3,6 +3,8 @@
 import { createContext, useContext } from "react";
 import { BalanceSummary, Source } from "@/lib/types";
 
+export type ThemeMode = "light" | "dark";
+
 export interface ShellState {
   summary: BalanceSummary;
   sources: Source[];
@@ -11,6 +13,8 @@ export interface ShellState {
   toggleHidden: () => void;
   openTransaction: (type: "income" | "expense") => void;
   openAdjust: () => void;
+  theme: ThemeMode;
+  toggleTheme: () => void;
 }
 
 export const ShellContext = createContext<ShellState | null>(null);

@@ -19,6 +19,8 @@ export {
   Sparkles as IconSparkle,
   Eye as IconEye,
   EyeOff as IconEyeOff,
+  SunMedium as IconSun,
+  MoonStar as IconMoon,
   Tag as IconTag,
   PartyPopper as IconParty,
 } from "lucide-react";

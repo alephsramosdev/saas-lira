@@ -13,10 +13,13 @@ import {
   IconEye,
   IconEyeOff,
   IconList,
+  IconMoon,
   IconPlus,
+  IconSun,
   IconTarget,
 } from "./icons";
 import { TransactionModal, AdjustBalanceModal } from "./TransactionModal";
+import type { ThemeMode } from "./shell-context";
 
 const Frame = styled.div`
   display: flex;
@@ -47,6 +50,14 @@ const Brand = styled(Link)`
   align-items: center;
   gap: 9px;
   padding: 0 8px;
+  min-width: 0;
+`;
+
+const SidebarTop = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
 `;
 
 const BrandMark = styled.div`
@@ -79,7 +90,7 @@ const Nav = styled.nav`
   gap: 3px;
 `;
 
-const NavItem = styled(Link)<{ "data-active": boolean }>`
+const NavItem = styled(Link) <{ "data-active": boolean }>`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -166,9 +177,40 @@ const EyeButton = styled.button`
   }
 `;
 
+const ThemeButton = styled.button`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  box-shadow: var(--shadow-chip);
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.12s ease,
+    color 0.18s ease;
+
+  &:hover {
+    background: var(--surface-3);
+    border-color: var(--border-strong);
+  }
+
+  &:active {
+    transform: scale(0.94);
+  }
+`;
+
 const Main = styled.main`
   flex: 1;
   min-width: 0;
+`;
+
+const RouteStage = styled.div`
+  min-height: 100vh;
+  animation: fade-up 0.32s ease both;
+  will-change: opacity, transform;
 `;
 
 /* ---------- Mobile: tab bar inferior (estilo iOS) ---------- */
@@ -185,7 +227,7 @@ const BottomNav = styled.nav`
     left: 0;
     right: 0;
     z-index: 60;
-    background: rgba(255, 255, 255, 0.88);
+    background: var(--glass-nav);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     border-top: 1px solid var(--border);
@@ -193,7 +235,19 @@ const BottomNav = styled.nav`
   }
 `;
 
-const BottomItem = styled(Link)<{ "data-active": boolean }>`
+const MobileThemeButton = styled(ThemeButton)`
+  position: fixed;
+  right: 16px;
+  bottom: calc(74px + env(safe-area-inset-bottom));
+  z-index: 65;
+  display: none;
+
+  @media (max-width: 720px) {
+    display: inline-flex;
+  }
+`;
+
+const BottomItem = styled(Link) <{ "data-active": boolean }>`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -272,15 +326,43 @@ export default function Shell({
   const pathname = usePathname();
   const [modal, setModal] = useState<"income" | "expense" | "adjust" | null>(null);
   const [hidden, setHidden] = useState(false);
+  const [theme, setTheme] = useState<ThemeMode>("light");
 
   useEffect(() => {
     setHidden(localStorage.getItem("lira:hidden") === "1");
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    const savedTheme = localStorage.getItem("lira:theme") as ThemeMode | null;
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+    const initialTheme = savedTheme ?? systemTheme;
+
+    root.dataset.theme = initialTheme;
+    if (meta) meta.setAttribute("content", initialTheme === "dark" ? "#111112" : "#ffffff");
+    setTheme(initialTheme);
   }, []);
 
   const toggleHidden = useCallback(() => {
     setHidden((h) => {
       localStorage.setItem("lira:hidden", h ? "0" : "1");
       return !h;
+    });
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    setTheme((currentTheme) => {
+      const nextTheme: ThemeMode = currentTheme === "dark" ? "light" : "dark";
+      document.documentElement.dataset.theme = nextTheme;
+      localStorage.setItem("lira:theme", nextTheme);
+
+      const meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute("content", nextTheme === "dark" ? "#111112" : "#ffffff");
+
+      return nextTheme;
     });
   }, []);
 
@@ -291,23 +373,30 @@ export default function Shell({
   const openAdjust = useCallback(() => setModal("adjust"), []);
 
   const ctx = useMemo(
-    () => ({ summary, sources, hidden, toggleHidden, openTransaction, openAdjust }),
-    [summary, sources, hidden, toggleHidden, openTransaction, openAdjust]
+    () => ({ summary, sources, hidden, toggleHidden, openTransaction, openAdjust, theme, toggleTheme }),
+    [summary, sources, hidden, toggleHidden, openTransaction, openAdjust, theme, toggleTheme]
   );
 
   const Eye = hidden ? IconEyeOff : IconEye;
+  const ThemeIcon = theme === "dark" ? IconSun : IconMoon;
+  const themeLabel = theme === "dark" ? "Ativar modo claro" : "Ativar modo escuro";
 
   return (
     <ShellContext.Provider value={ctx}>
       <Frame>
         <Sidebar>
-          <Brand href="/">
-            <BrandMark>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.svg" alt="Lira" />
-            </BrandMark>
-            <BrandName>Lira</BrandName>
-          </Brand>
+          <SidebarTop>
+            <Brand href="/">
+              <BrandMark>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src="/logo.svg" alt="Lira" />
+              </BrandMark>
+              <BrandName>Lira</BrandName>
+            </Brand>
+            <ThemeButton onClick={toggleTheme} aria-label={themeLabel} title={themeLabel}>
+              <ThemeIcon size={16} />
+            </ThemeButton>
+          </SidebarTop>
           <Nav>
             {NAV.map(({ href, label, icon: Icon }) => (
               <NavItem key={href} href={href} data-active={pathname === href}>
@@ -331,8 +420,18 @@ export default function Shell({
           </SideBalance>
         </Sidebar>
 
-        <Main>{children}</Main>
+        <Main>
+          <RouteStage key={pathname}>{children}</RouteStage>
+        </Main>
       </Frame>
+
+      <MobileThemeButton
+        onClick={toggleTheme}
+        aria-label={themeLabel}
+        title={themeLabel}
+      >
+        <ThemeIcon size={16} />
+      </MobileThemeButton>
 
       <BottomNav>
         <BottomItem href="/" data-active={pathname === "/"}>

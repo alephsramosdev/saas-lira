@@ -103,7 +103,7 @@ const HeroGreeting = styled.div`
 
   span {
     display: block;
-    color: rgba(20, 20, 21, 0.45);
+    color: var(--text-faint);
     font-size: 12.5px;
     font-weight: 500;
 
@@ -118,7 +118,7 @@ const HeroRound = styled.button`
   height: 40px;
   border-radius: 99px;
   border: none;
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--glass-strong);
   color: var(--text);
   display: inline-flex;
   align-items: center;
@@ -127,7 +127,7 @@ const HeroRound = styled.button`
   transition: background 0.15s ease, transform 0.12s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--glass-strong-hover);
   }
 
   &:active {
@@ -139,21 +139,21 @@ const CurrencyChip = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.55);
+  background: var(--glass-soft);
   border-radius: 99px;
   padding: 4px 11px 4px 5px;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
-  color: rgba(20, 20, 21, 0.55);
+  color: var(--text-subtle);
   margin-bottom: 10px;
 
   i {
     width: 18px;
     height: 18px;
     border-radius: 99px;
-    background: var(--text);
-    color: #fff;
+    background: var(--surface-inverse);
+    color: var(--bg);
     font-style: normal;
     font-size: 10px;
     font-weight: 700;
@@ -179,7 +179,7 @@ const HeroSub = styled(Link)`
   margin-top: 8px;
   font-size: 12.5px;
   font-weight: 600;
-  color: rgba(20, 20, 21, 0.5);
+  color: var(--text-quiet);
   transition: color 0.15s ease;
 
   &:hover {
@@ -208,7 +208,7 @@ const DeltaPill = styled.span`
 
 /* faixa escura de ações (Send / Request da referência) */
 const ActionStrip = styled.div`
-  background: var(--text);
+  background: var(--surface-inverse);
   border-radius: 24px;
   padding: 10px;
   display: flex;
@@ -226,8 +226,8 @@ const StripPill = styled.button`
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #2e2e31;
-  color: #fff;
+  background: var(--surface-inverse-2);
+  color: var(--bg);
   border: none;
   border-radius: 99px;
   padding: 12px 18px;
@@ -240,7 +240,7 @@ const StripPill = styled.button`
     width: 22px;
     height: 22px;
     border-radius: 99px;
-    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    border: 1.5px solid var(--inverse-border);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -248,7 +248,7 @@ const StripPill = styled.button`
   }
 
   &:hover {
-    background: #3a3a3e;
+    background: var(--surface-inverse-3);
   }
 
   &:active {
@@ -378,7 +378,7 @@ const BottomGrid = styled.div`
   }
 `;
 
-const AnimatedCard = styled(Card)<{ delay?: number }>`
+const AnimatedCard = styled(Card) <{ delay?: number }>`
   animation: fade-up 0.4s ease both;
   animation-delay: ${(p) => (p.delay ?? 0) * 60}ms;
 `;
