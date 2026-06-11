@@ -149,7 +149,7 @@ export const Button = styled.button<{
       default:
         return `
           background: var(--primary);
-          color: #fff;
+          color: var(--bg);
           &:hover:not(:disabled) { background: var(--primary-strong); }
         `;
     }
